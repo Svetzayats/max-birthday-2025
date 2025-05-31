@@ -724,7 +724,7 @@
         const answer = input.value.toLowerCase().trim();
 
         if (answer === "розовый") {
-          setTimeout(() => goToCountryScreen(), 500);
+          setTimeout(() => goToOvenScreen(), 500);
         } else {
           input.value = "";
           input.classList.add("shake");
@@ -737,6 +737,26 @@
             input.style.borderColor = "rgba(255, 255, 255, 0.2)";
           }, 1000);
         }
+      }
+
+      function goToOvenScreen() {
+        currentScreen = "overn";
+        renderOvenScreen();
+      }
+
+      function renderOvenScreen() {
+        document.querySelector(".screen-content").innerHTML = `
+       <div class="question" style="text-align: center; line-height: 1.6;">
+           <p style="margin-bottom: 20px; font-style: italic; color: #4ecdc4;">Самое время кое-что найти... Первые ОНИ были глиняными, потом стали чугунными, а теперь ОНИ электрические.</p>
+           
+           <p style="margin-bottom: 20px; font-weight: bold; color: #ff6b6b;">Введи название страны, в которой произведено то, что ты нашел в ЭТОМ</p>
+       </div>
+       
+       <input type="text" class="input-field" id="country-answer" placeholder="Введите название страны..." />
+       <button class="submit-btn" onclick="checkCountryAnswer()">
+           Проверить ответ 🐰→
+       </button>
+   `;
       }
 
       function goToCocktailScreen() {
