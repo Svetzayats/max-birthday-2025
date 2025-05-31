@@ -1,387 +1,470 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>🐰 Birthday Quest</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
-            color: #e0e6ed;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow-x: hidden;
-        }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(
+          135deg,
+          #0f0f23 0%,
+          #1a1a2e 50%,
+          #16213e 100%
+        );
+        color: #e0e6ed;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow-x: hidden;
+      }
 
+      .quest-container {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 40px;
+        max-width: 600px;
+        width: 90%;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .quest-container::before {
+        content: "";
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: linear-gradient(
+          45deg,
+          #ff6b6b,
+          #4ecdc4,
+          #45b7d1,
+          #96ceb4,
+          #feca57
+        );
+        border-radius: 22px;
+        z-index: -1;
+        opacity: 0.3;
+        animation: borderGlow 3s ease-in-out infinite alternate;
+      }
+
+      @keyframes borderGlow {
+        0% {
+          opacity: 0.3;
+        }
+        100% {
+          opacity: 0.6;
+        }
+      }
+
+      .rabbit-decoration {
+        position: absolute;
+        font-size: 2rem;
+        opacity: 0.1;
+        animation: float 4s ease-in-out infinite;
+      }
+
+      .rabbit-1 {
+        top: 10%;
+        right: 10%;
+        animation-delay: 0s;
+      }
+      .rabbit-2 {
+        bottom: 15%;
+        left: 5%;
+        animation-delay: 1s;
+      }
+      .rabbit-3 {
+        top: 60%;
+        right: 5%;
+        animation-delay: 2s;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-20px) rotate(5deg);
+        }
+      }
+
+      .quest-header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .quest-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+        background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 10px;
+      }
+
+      .quest-subtitle {
+        font-size: 1.1rem;
+        opacity: 0.8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .screen-content {
+        margin: 30px 0;
+      }
+
+      .question {
+        font-size: 1.3rem;
+        margin-bottom: 25px;
+        text-align: center;
+        line-height: 1.5;
+      }
+
+      .input-field {
+        width: 100%;
+        padding: 15px 20px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        color: #e0e6ed;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        outline: none;
+      }
+
+      .input-field:focus {
+        border-color: #4ecdc4;
+        box-shadow: 0 0 20px rgba(78, 205, 196, 0.3);
+        transform: scale(1.02);
+      }
+
+      .input-field::placeholder {
+        color: rgba(224, 230, 237, 0.5);
+      }
+
+      .choice-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin: 20px 0;
+      }
+
+      .choice-btn {
+        padding: 15px 25px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        color: #e0e6ed;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .choice-btn:hover {
+        background: rgba(78, 205, 196, 0.2);
+        border-color: #4ecdc4;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(78, 205, 196, 0.3);
+      }
+
+      .choice-btn.selected {
+        background: rgba(78, 205, 196, 0.3);
+        border-color: #4ecdc4;
+        box-shadow: 0 0 20px rgba(78, 205, 196, 0.4);
+      }
+
+      .shake {
+        animation: shake 0.6s ease-in-out;
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        10%,
+        30%,
+        50%,
+        70%,
+        90% {
+          transform: translateX(-8px);
+        }
+        20%,
+        40%,
+        60%,
+        80% {
+          transform: translateX(8px);
+        }
+      }
+
+      .submit-btn {
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+        border: none;
+        border-radius: 12px;
+        color: white;
+        font-size: 1.2rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 20px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+      }
+
+      .submit-btn:active {
+        transform: translateY(0);
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 3px;
+        margin-bottom: 20px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+        border-radius: 3px;
+        transition: width 0.5s ease;
+      }
+
+      @media (max-width: 768px) {
         .quest-container {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 40px;
-            max-width: 600px;
-            width: 90%;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .quest-container::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
-            border-radius: 22px;
-            z-index: -1;
-            opacity: 0.3;
-            animation: borderGlow 3s ease-in-out infinite alternate;
-        }
-
-        @keyframes borderGlow {
-            0% { opacity: 0.3; }
-            100% { opacity: 0.6; }
-        }
-
-        .rabbit-decoration {
-            position: absolute;
-            font-size: 2rem;
-            opacity: 0.1;
-            animation: float 4s ease-in-out infinite;
-        }
-
-        .rabbit-1 { top: 10%; right: 10%; animation-delay: 0s; }
-        .rabbit-2 { bottom: 15%; left: 5%; animation-delay: 1s; }
-        .rabbit-3 { top: 60%; right: 5%; animation-delay: 2s; }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(5deg); }
-        }
-
-        .quest-header {
-            text-align: center;
-            margin-bottom: 30px;
+          padding: 30px 20px;
+          margin: 20px;
         }
 
         .quest-title {
-            font-size: 2.5rem;
-            font-weight: bold;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 10px;
-        }
-
-        .quest-subtitle {
-            font-size: 1.1rem;
-            opacity: 0.8;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .screen-content {
-            margin: 30px 0;
+          font-size: 2rem;
         }
 
         .question {
-            font-size: 1.3rem;
-            margin-bottom: 25px;
-            text-align: center;
-            line-height: 1.5;
+          font-size: 1.1rem;
         }
+      }
 
-        .input-field {
-            width: 100%;
-            padding: 15px 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            color: #e0e6ed;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            outline: none;
+      @keyframes rabbitFloat {
+        0% {
+          opacity: 0;
+          transform: translateY(0) scale(0.5);
         }
-
-        .input-field:focus {
-            border-color: #4ecdc4;
-            box-shadow: 0 0 20px rgba(78, 205, 196, 0.3);
-            transform: scale(1.02);
+        50% {
+          opacity: 1;
+          transform: translateY(-20px) scale(1);
         }
-
-        .input-field::placeholder {
-            color: rgba(224, 230, 237, 0.5);
+        100% {
+          opacity: 0;
+          transform: translateY(-40px) scale(0.5);
         }
+      }
 
-        .choice-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin: 20px 0;
+      @keyframes zoomIn {
+        0% {
+          transform: scale(0.1);
+          opacity: 0;
         }
-
-        .choice-btn {
-            padding: 15px 25px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            color: #e0e6ed;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+        100% {
+          transform: scale(1);
+          opacity: 1;
         }
+      }
 
-        .choice-btn:hover {
-            background: rgba(78, 205, 196, 0.2);
-            border-color: #4ecdc4;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.3);
+      @keyframes fadeInDelayed {
+        0% {
+          opacity: 0;
+          transform: translateY(20px);
         }
-
-        .choice-btn.selected {
-            background: rgba(78, 205, 196, 0.3);
-            border-color: #4ecdc4;
-            box-shadow: 0 0 20px rgba(78, 205, 196, 0.4);
+        100% {
+          opacity: 1;
+          transform: translateY(0);
         }
+      }
 
-        .shake {
-            animation: shake 0.6s ease-in-out;
+      @keyframes confettiFall {
+        0% {
+          transform: translateY(-10px) rotate(0deg);
+          opacity: 1;
         }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
-            20%, 40%, 60%, 80% { transform: translateX(8px); }
+        100% {
+          transform: translateY(400px) rotate(720deg);
+          opacity: 0;
         }
-
-        .submit-btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-size: 1.2rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
-        }
-
-        .submit-btn:active {
-            transform: translateY(0);
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-            border-radius: 3px;
-            transition: width 0.5s ease;
-        }
-
-        @media (max-width: 768px) {
-            .quest-container {
-                padding: 30px 20px;
-                margin: 20px;
-            }
-            
-            .quest-title {
-                font-size: 2rem;
-            }
-            
-            .question {
-                font-size: 1.1rem;
-            }
-        }
-
-        @keyframes rabbitFloat {
-       0% {
-           opacity: 0;
-           transform: translateY(0) scale(0.5);
-       }
-       50% {
-           opacity: 1;
-           transform: translateY(-20px) scale(1);
-       }
-       100% {
-           opacity: 0;
-           transform: translateY(-40px) scale(0.5);
-       }
-   }
-   
-   @keyframes zoomIn {
-       0% {
-           transform: scale(0.1);
-           opacity: 0;
-       }
-       100% {
-           transform: scale(1);
-           opacity: 1;
-       }
-   }
-   
-   @keyframes fadeInDelayed {
-       0% {
-           opacity: 0;
-           transform: translateY(20px);
-       }
-       100% {
-           opacity: 1;
-           transform: translateY(0);
-       }
-   }
-   
-   @keyframes confettiFall {
-       0% {
-           transform: translateY(-10px) rotate(0deg);
-           opacity: 1;
-       }
-       100% {
-           transform: translateY(400px) rotate(720deg);
-           opacity: 0;
-       }
-   }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="quest-container">
-        <!-- Floating rabbit decorations -->
-        <div class="rabbit-decoration rabbit-1">🐰</div>
-        <div class="rabbit-decoration rabbit-2">🐇</div>
-        <div class="rabbit-decoration rabbit-3">🐰</div>
+      <!-- Floating rabbit decorations -->
+      <div class="rabbit-decoration rabbit-1">🐰</div>
+      <div class="rabbit-decoration rabbit-2">🐇</div>
+      <div class="rabbit-decoration rabbit-3">🐰</div>
 
-        <!-- Header -->
-        <div class="quest-header">
-            <h1 class="quest-title">Birthday Quest</h1>
-            <p class="quest-subtitle">
-                <span>🎉 Adventure awaits</span>
-                <span>🐰</span>
-            </p>
+      <!-- Header -->
+      <div class="quest-header">
+        <h1 class="quest-title">Birthday Quest</h1>
+        <p class="quest-subtitle">
+          <span>🎉 Adventure awaits</span>
+          <span>🐰</span>
+        </p>
+      </div>
+
+      <!-- Progress bar -->
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: 20%"></div>
+      </div>
+
+      <!-- Screen content - this will vary for each task -->
+      <div class="screen-content">
+        <div class="question">
+          Welcome to your birthday quest! Are you ready to begin this magical
+          rabbit adventure?
         </div>
 
-        <!-- Progress bar -->
-        <div class="progress-bar">
-            <div class="progress-fill" style="width: 20%"></div>
+        <!-- Example: Multiple choice buttons -->
+        <div class="choice-buttons">
+          <button
+            class="choice-btn"
+            onclick="selectChoice(this, 'yes')"
+            id="start-btn"
+          >
+            🚀 Yes, let's start the adventure!
+          </button>
+          <button class="choice-btn" onclick="selectChoice(this, 'maybe')">
+            🤔 Maybe... tell me more
+          </button>
+          <button
+            class="choice-btn"
+            onclick="selectChoice(this, 'no')"
+            id="not-ready-btn"
+          >
+            😅 Not sure I'm ready
+          </button>
         </div>
 
-        <!-- Screen content - this will vary for each task -->
-        <div class="screen-content">
-            <div class="question">
-                Welcome to your birthday quest! Are you ready to begin this magical rabbit adventure?
-            </div>
-
-            <!-- Example: Multiple choice buttons -->
-            <div class="choice-buttons">
-                <button class="choice-btn" onclick="selectChoice(this, 'yes')" id="start-btn">
-                    🚀 Yes, let's start the adventure!
-                </button>
-                <button class="choice-btn" onclick="selectChoice(this, 'maybe')">
-                    🤔 Maybe... tell me more
-                </button>
-                <button class="choice-btn" onclick="selectChoice(this, 'no')" id="not-ready-btn">
-                    😅 Not sure I'm ready
-                </button>
-            </div>
-
-            <!-- Hidden image container -->
-            <div id="surprise-image" style="display: none; text-align: center; margin: 20px 0;">
-                <img src="https://i.ytimg.com/vi/JVajqWPL1j0/sddefault.jpg?sqp=-oaymwEmCIAFEOAD8quKqQMa8AEB-AH-DoACuAiKAgwIABABGFUgZShlMA8=&rs=AOn4CLDDjdjs9dH7Uwv6MrNC6aiy5et9Vw" 
-                     alt="Surprise!" 
-                     style="max-width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); animation: slideIn 0.5s ease-out;" />
-                <p style="margin-top: 15px; font-style: italic; opacity: 0.8;">🐰 Sorry, it's not an option</p>
-            </div>
-
-            <!-- Hidden maybe caption -->
-            <div id="maybe-caption" style="display: none; text-align: center; margin: 20px 0; padding: 15px; background: rgba(78, 205, 196, 0.1); border-radius: 12px; border: 1px solid rgba(78, 205, 196, 0.3);">
-                <p style="font-style: italic; opacity: 0.9;">🐰 Никто не пострадает, кто-то возможно даже получит удовольствие</p>
-            </div>
-
-            <!-- Example: Text input (hidden by default) -->
-            <div style="display: none;">
-                <input type="text" class="input-field" placeholder="Type your answer here..." />
-            </div>
-
-
+        <!-- Hidden image container -->
+        <div
+          id="surprise-image"
+          style="display: none; text-align: center; margin: 20px 0"
+        >
+          <img
+            src="https://i.ytimg.com/vi/JVajqWPL1j0/sddefault.jpg?sqp=-oaymwEmCIAFEOAD8quKqQMa8AEB-AH-DoACuAiKAgwIABABGFUgZShlMA8=&rs=AOn4CLDDjdjs9dH7Uwv6MrNC6aiy5et9Vw"
+            alt="Surprise!"
+            style="
+              max-width: 100%;
+              border-radius: 12px;
+              box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+              animation: slideIn 0.5s ease-out;
+            "
+          />
+          <p style="margin-top: 15px; font-style: italic; opacity: 0.8">
+            🐰 Sorry, it's not an option
+          </p>
         </div>
+
+        <!-- Hidden maybe caption -->
+        <div
+          id="maybe-caption"
+          style="
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(78, 205, 196, 0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(78, 205, 196, 0.3);
+          "
+        >
+          <p style="font-style: italic; opacity: 0.9">
+            🐰 Никто не пострадает, кто-то возможно даже получит удовольствие
+          </p>
+        </div>
+
+        <!-- Example: Text input (hidden by default) -->
+        <div style="display: none">
+          <input
+            type="text"
+            class="input-field"
+            placeholder="Type your answer here..."
+          />
+        </div>
+      </div>
     </div>
 
     <script>
-        let selectedAnswer = null;
-        let currentScreen = 1;
-        let currentQuestion = 1;
+      let selectedAnswer = null;
+      let currentScreen = "welcome";
+      let currentQuestion = 1;
 
-        function selectChoice(button, value) {
-            // Remove selected class from all buttons
-            document.querySelectorAll('.choice-btn').forEach(btn => {
-                btn.classList.remove('selected');
-            });
-            
-            // Add selected class to clicked button
-            button.classList.add('selected');
-            selectedAnswer = value;
+      function selectChoice(button, value) {
+        // Remove selected class from all buttons
+        document.querySelectorAll(".choice-btn").forEach((btn) => {
+          btn.classList.remove("selected");
+        });
 
-            // Hide all special elements first
-            hideSurpriseImage();
-            hideMaybeCaption();
+        // Add selected class to clicked button
+        button.classList.add("selected");
+        selectedAnswer = value;
 
-            // Special actions for different buttons
-            if (value === 'no') {
-                showSurpriseImage();
-            } else if (value === 'maybe') {
-                showMaybeCaption();
-            } else if (value === 'yes') {
-                setTimeout(() => goToSecondScreen(), 500);
-            }
+        // Hide all special elements first
+        hideSurpriseImage();
+        hideMaybeCaption();
+
+        // Special actions for different buttons
+        if (value === "no") {
+          showSurpriseImage();
+        } else if (value === "maybe") {
+          showMaybeCaption();
+        } else if (value === "yes") {
+          setTimeout(() => goToIdentityScreen(), 500);
         }
+      }
 
-        function goToSecondScreen() {
-            currentScreen = 2;
-            currentQuestion = 1;
-            updateProgressBar(40);
-            renderSecondScreen();
-        }
+      function goToIdentityScreen() {
+        currentScreen = "identity";
+        currentQuestion = 1;
+        updateProgressBar(40);
+        renderIdentityScreen();
+      }
 
-        function goToFirstScreen() {
-            currentScreen = 1;
-            currentQuestion = 1;
-            updateProgressBar(20);
-            renderFirstScreen();
-        }
+      function goToWelcomeScreen() {
+        currentScreen = "welcome";
+        currentQuestion = 1;
+        updateProgressBar(20);
+        renderWelcomeScreen();
+      }
 
-        function renderFirstScreen() {
-            document.querySelector('.screen-content').innerHTML = `
+      function renderWelcomeScreen() {
+        document.querySelector(".screen-content").innerHTML = `
                 <div class="question">
                     Добро пожаловать в квест! Готов ли ты начать это волшебное приключение с кроликами?
                 </div>
@@ -409,17 +492,19 @@
                     <p style="font-style: italic; opacity: 0.9;">🐰 Никто не пострадает, кто-то возможно даже получит удовольствие</p>
                 </div>
             `;
-        }
+      }
 
-        function renderSecondScreen() {
-            const topCaption = `
+      function renderIdentityScreen() {
+        const topCaption = `
                 <div style="background: rgba(255, 107, 107, 0.1); padding: 15px; border-radius: 12px; margin-bottom: 25px; border: 1px solid rgba(255, 107, 107, 0.3); text-align: center;">
                     <p style="font-weight: bold; opacity: 0.9;">Для начала надо удостовериться, что ты - тот самый Заяц, которому предназначается приключение.</p>
                 </div>
             `;
 
-            if (currentQuestion === 1) {
-                document.querySelector('.screen-content').innerHTML = topCaption + `
+        if (currentQuestion === 1) {
+          document.querySelector(".screen-content").innerHTML =
+            topCaption +
+            `
                     <div class="question">
                         Вопрос 1 из 3: Mass Effect или Red Dead Redemption?
                     </div>
@@ -432,8 +517,10 @@
                         </button>
                     </div>
                 `;
-            } else if (currentQuestion === 2) {
-                document.querySelector('.screen-content').innerHTML = topCaption + `
+        } else if (currentQuestion === 2) {
+          document.querySelector(".screen-content").innerHTML =
+            topCaption +
+            `
                     <div class="question">
                         Вопрос 2 из 3: Бобруйский бровар или Лидское?
                     </div>
@@ -446,8 +533,10 @@
                         </button>
                     </div>
                 `;
-            } else if (currentQuestion === 3) {
-                document.querySelector('.screen-content').innerHTML = topCaption + `
+        } else if (currentQuestion === 3) {
+          document.querySelector(".screen-content").innerHTML =
+            topCaption +
+            `
                     <div class="question">
                         Вопрос 3 из 3: В кого влюблен Борат?
                     </div>
@@ -456,44 +545,45 @@
                         Ответить 🐰→
                     </button>
                 `;
-            }
         }
+      }
 
-        function answerQuestion(answer) {
-            if (currentQuestion === 1 && answer === 'mass_effect') {
-                currentQuestion = 2;
-                updateProgressBar(60);
-                setTimeout(() => renderSecondScreen(), 300);
-            } else if (currentQuestion === 2 && answer === 'lidskoe') {
-                currentQuestion = 3;
-                updateProgressBar(80);
-                setTimeout(() => renderSecondScreen(), 300);
-            } else {
-                // Wrong answer - go back to first screen
-                setTimeout(() => goToFirstScreen(), 500);
-            }
+      function answerQuestion(answer) {
+        if (currentQuestion === 1 && answer === "mass_effect") {
+          currentQuestion = 2;
+          updateProgressBar(60);
+          setTimeout(() => renderIdentityScreen(), 300);
+        } else if (currentQuestion === 2 && answer === "lidskoe") {
+          currentQuestion = 3;
+          updateProgressBar(80);
+          setTimeout(() => renderIdentityScreen(), 300);
+        } else {
+          // Wrong answer - go back to first screen
+          setTimeout(() => goToWelcomeScreen(), 500);
         }
+      }
 
-        function checkBoratAnswer() {
-            const answer = document.getElementById('borat-answer').value.toLowerCase().trim();
-            if (answer === 'памела андерсон' || answer === 'pamela anderson') {
-                updateProgressBar(100);
-                // Go to third screen
-                setTimeout(() => goToThirdScreen(), 500);
-            } else {
-                // Wrong answer - go back to first screen
-                setTimeout(() => goToFirstScreen(), 500);
-            }
+      function checkBoratAnswer() {
+        const answer = document
+          .getElementById("borat-answer")
+          .value.toLowerCase()
+          .trim();
+        if (answer === "памела андерсон" || answer === "pamela anderson") {
+          updateProgressBar(100);
+          setTimeout(() => goToChartreuseScreen(), 500);
+        } else {
+          setTimeout(() => goToWelcomeScreen(), 500);
         }
+      }
 
-        function goToThirdScreen() {
-            currentScreen = 3;
-            updateProgressBar(100);
-            renderThirdScreen();
-        }
+      function goToChartreuseScreen() {
+        currentScreen = "chartreuse";
+        updateProgressBar(100);
+        renderChartreuseScreen();
+      }
 
-        function renderThirdScreen() {
-            document.querySelector('.screen-content').innerHTML = `
+      function renderChartreuseScreen() {
+        document.querySelector(".screen-content").innerHTML = `
                 <div class="question" style="text-align: left; line-height: 1.6;">
                     <h3 style="text-align: center; color: #4ecdc4; margin-bottom: 20px;">Что ж, стартуем, капитан Заяц! 🐰</h3>
                     
@@ -501,7 +591,7 @@
                     
                     <p style="margin-bottom: 15px;">Основа их духовности — суровая аскеза, при этом картезианцы уделяют много внимания физическому и интеллектуальному труду. В средние века они занимались ремёслами, перепиской книг и славились своим гостеприимством и благотворительностью.</p>
                     
-                    <p style="margin-bottom: 20px; font-weight: bold; color: #ff6b6b;">Назовите, производство ЧЕГО было одним из основных источников доходов монахов, с учетом того, что вы тратите на ЭТО деньги, чтобы приятно провести время. Приготовление разного из ЭТОГО для вас хобби.</p>
+                    <p style="margin-bottom: 20px; font-weight: bold; color: #ff6b6b;">Назовите, производство ЧЕГО было одним из основных источников доходов монахов, с учетом того, что вы тратите на ЭТО деньги, чтобы приятно провести время. Приготовление разного из НЕГО для вас хобби.</p>
                 </div>
                 
                 <input type="text" class="input-field" id="chartreuse-answer" placeholder="Введите ваш ответ..." />
@@ -509,34 +599,35 @@
                     Проверить ответ 🐰→
                 </button>
             `;
-        }
+      }
 
-        function checkChartreuseAnswer() {
-            const input = document.getElementById('chartreuse-answer');
-            const answer = input.value.toLowerCase().trim();
-            
-            if (answer === 'алкоголь' || answer === 'ликер' || answer === 'шартрез') {
-                // Correct answer - go to fourth screen
-                setTimeout(() => goToFourthScreen(), 500);
-            } else {
-                // Wrong answer - shake and reset
-                input.value = '';
-                input.classList.add('shake');
-                input.focus();
-                
-                setTimeout(() => {
-                    input.classList.remove('shake');
-                }, 600);
-            }
-        }
+      function checkChartreuseAnswer() {
+        const input = document.getElementById("chartreuse-answer");
+        const answer = input.value.toLowerCase().trim();
 
-        function goToFourthScreen() {
-            currentScreen = 4;
-            renderFourthScreen();
+        if (
+          answer === "алкоголь" ||
+          answer === "ликер" ||
+          answer === "шартрез"
+        ) {
+          setTimeout(() => goToDeGaulleScreen(), 500);
+        } else {
+          input.value = "";
+          input.classList.add("shake");
+          input.focus();
+          setTimeout(() => {
+            input.classList.remove("shake");
+          }, 600);
         }
+      }
 
-        function renderFourthScreen() {
-            document.querySelector('.screen-content').innerHTML = `
+      function goToDeGaulleScreen() {
+        currentScreen = "degaulle";
+        renderDeGaulleScreen();
+      }
+
+      function renderDeGaulleScreen() {
+        document.querySelector(".screen-content").innerHTML = `
                 <div class="question" style="text-align: left; line-height: 1.6;">
                     <h3 style="text-align: center; color: #4ecdc4; margin-bottom: 20px;">Отлично! 🎉</h3>
                     
@@ -550,34 +641,31 @@
                     Проверить ответ 🐰→
                 </button>
             `;
-        }
+      }
 
-        function checkDeGaulleAnswer() {
-            const input = document.getElementById('degaulle-answer');
-            const answer = input.value.toLowerCase().trim();
-            
-            if (answer === 'лидапищеконцентраты') {
-                // Correct answer - go to fifth screen
-                setTimeout(() => goToFifthScreen(), 500);
-            } else {
-                // Wrong answer - shake and reset
-                input.value = '';
-                input.classList.add('shake');
-                input.focus();
-                
-                setTimeout(() => {
-                    input.classList.remove('shake');
-                }, 600);
-            }
-        }
+      function checkDeGaulleAnswer() {
+        const input = document.getElementById("degaulle-answer");
+        const answer = input.value.toLowerCase().trim();
 
-        function goToFifthScreen() {
-            currentScreen = 5;
-            renderFifthScreen();
+        if (answer === "лидапищеконцентраты") {
+          setTimeout(() => goToLidkonScreen(), 500);
+        } else {
+          input.value = "";
+          input.classList.add("shake");
+          input.focus();
+          setTimeout(() => {
+            input.classList.remove("shake");
+          }, 600);
         }
+      }
 
-        function renderFifthScreen() {
-            document.querySelector('.screen-content').innerHTML = `
+      function goToLidkonScreen() {
+        currentScreen = "lidkon";
+        renderLidkonScreen();
+      }
+
+      function renderLidkonScreen() {
+        document.querySelector(".screen-content").innerHTML = `
                 <div style="text-align: center; margin-bottom: 25px;">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/d/da/%D0%9B%D0%B8%D0%B4%D0%BA%D0%BE%D0%BD_%D0%B4%D0%BB%D1%8F_POSM.jpg" 
                          alt="Исследуйте изображение" 
@@ -593,54 +681,31 @@
                     Проверить ответ 🐰→
                 </button>
             `;
-        }
+      }
 
-        function checkUnexpectedAnswer() {
-            const input = document.getElementById('unexpected-answer');
-            const answer = input.value.toLowerCase().trim();
-            
-            if (answer === 'эспандер') {
-                // Correct answer - proceed to next screen
-                alert('Отлично! Вы нашли то, что нужно! 🎉🐰');
-                // Here you can add code to go to the next screen
-            } else {
-                // Wrong answer - shake and reset
-                input.value = '';
-                input.classList.add('shake');
-                input.focus();
-                
-                setTimeout(() => {
-                    input.classList.remove('shake');
-                }, 600);
-            }
-        }
-        
-        function checkUnexpectedAnswer() {
-            const input = document.getElementById('unexpected-answer');
-            const answer = input.value.toLowerCase().trim();
-            
-            if (answer === 'эспандер') {
-                // Correct answer - proceed to sixth screen
-                setTimeout(() => goToSixthScreen(), 500);
-            } else {
-                // Wrong answer - shake and reset
-                input.value = '';
-                input.classList.add('shake');
-                input.focus();
-                
-                setTimeout(() => {
-                    input.classList.remove('shake');
-                }, 600);
-            }
-        }
+      function checkUnexpectedAnswer() {
+        const input = document.getElementById("unexpected-answer");
+        const answer = input.value.toLowerCase().trim();
 
-        function goToSixthScreen() {
-            currentScreen = 6;
-            renderSixthScreen();
+        if (answer === "эспандер") {
+          setTimeout(() => goToCocktailScreen(), 500);
+        } else {
+          input.value = "";
+          input.classList.add("shake");
+          input.focus();
+          setTimeout(() => {
+            input.classList.remove("shake");
+          }, 600);
         }
+      }
 
-        function renderSixthScreen() {
-            document.querySelector('.screen-content').innerHTML = `
+      function goToPinkScreen() {
+        currentScreen = "pink";
+        renderPinkScreen();
+      }
+
+      function renderPinkScreen() {
+        document.querySelector(".screen-content").innerHTML = `
                 <div class="question" style="text-align: center; line-height: 1.6;">
                     <h3 style="color: #4ecdc4; margin-bottom: 20px;">Ого, хорошо продвигаемся! 🎉</h3>
                     
@@ -652,79 +717,94 @@
                     Проверить ответ 🐰→
                 </button>
             `;
+      }
+
+      function checkPinkAnswer() {
+        const input = document.getElementById("pink-answer");
+        const answer = input.value.toLowerCase().trim();
+
+        if (answer === "розовый") {
+          setTimeout(() => goToCountryScreen(), 500);
+        } else {
+          input.value = "";
+          input.classList.add("shake");
+          input.style.backgroundColor = "rgba(255, 192, 203, 0.3)";
+          input.style.borderColor = "#FFB6C1";
+          input.focus();
+          setTimeout(() => {
+            input.classList.remove("shake");
+            input.style.backgroundColor = "rgba(255, 255, 255, 0.1)";
+            input.style.borderColor = "rgba(255, 255, 255, 0.2)";
+          }, 1000);
         }
+      }
 
-        function checkPinkAnswer() {
-            const input = document.getElementById('pink-answer');
-            const answer = input.value.toLowerCase().trim();
-            
-            if (answer === 'розовый') {
-                // Correct answer - proceed to next screen
-                setTimeout(() => goToSeventhScreen(), 500);
-                // Here you can add code to go to the next screen
-            } else {
-                // Wrong answer - shake, turn pink and reset
-                input.value = '';
-                input.classList.add('shake');
-                input.style.backgroundColor = 'rgba(255, 192, 203, 0.3)';
-                input.style.borderColor = '#FFB6C1';
-                input.focus();
-                
-                setTimeout(() => {
-                    input.classList.remove('shake');
-                    input.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
-                    input.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                }, 1000);
-            }
-        }
+      function goToCocktailScreen() {
+        currentScreen = "cocktail";
+        renderCocktailScreen();
+      }
 
-        function goToSeventhScreen() {
-   currentScreen = 7;
-   renderSeventhScreen();
-}
-
-function renderSeventhScreen() {
-   document.querySelector('.screen-content').innerHTML = `
+      function renderCocktailScreen() {
+        document.querySelector(".screen-content").innerHTML = `
        <div class="question" style="text-align: center; line-height: 1.6;">
-           <p style="margin-bottom: 20px; font-style: italic; color: #4ecdc4;">Самое время кое-что найти... Первые ОНИ были глиняными, потом стали чугунными, а теперь ОНИ электрические.</p>
+           <h3 style="color: #4ecdc4; margin-bottom: 20px;">Минутка коктейльной креативности! 🍹</h3>
            
-           <p style="margin-bottom: 20px; font-weight: bold; color: #ff6b6b;">Введи название страны, в которой произведено то, что ты нашел в ЭТОМ</p>
+           <p style="font-size: 1.2rem; color: #ff6b6b; margin-bottom: 30px; font-weight: bold;">
+               Составь коктейль из подручных материалов и выпей. Если поморщишься — надо будет переделать ;)
+           </p>
        </div>
        
-       <input type="text" class="input-field" id="country-answer" placeholder="Введите название страны..." />
+       <button class="submit-btn" onclick="cocktailReady()" style="margin-top: 30px;">
+           Готово! 🍸🐰
+       </button>
+   `;
+      }
+
+      function cocktailReady() {
+        setTimeout(() => goToPinkScreen(), 500);
+      }
+
+      function goToCountryScreen() {
+        currentScreen = "country";
+        renderCountryScreen();
+      }
+
+      function renderCountryScreen() {
+        document.querySelector(".screen-content").innerHTML = `
+       <div class="question" style="text-align: center; line-height: 1.6;">
+           <p style="margin-bottom: 20px; font-weight: bold; color: #ff6b6b;">В Малайзии водятся малайский тигр и малайский медведь, а вот дьяволы там не водятся. А где они водятся?</p>
+       </div>
+       
+       <input type="text" class="input-field" id="country-answer" placeholder="Введите ваш ответ..." />
        <button class="submit-btn" onclick="checkCountryAnswer()">
            Проверить ответ 🐰→
        </button>
    `;
-}
+      }
 
-function checkCountryAnswer() {
-   const input = document.getElementById('country-answer');
-   const answer = input.value.toLowerCase().trim();
-   
-   if (answer === 'малайзия') {
-       // Correct answer - proceed to next screen
-       setTimeout(() => goToEighthScreen(), 500);
-       // Here you can add code to go to the next screen
-   } else {
-       // Wrong answer - shake and reset
-       input.value = '';
-       input.classList.add('shake');
-       input.focus();
-       
-       setTimeout(() => {
-           input.classList.remove('shake');
-       }, 600);
-   }
-}
+      function checkCountryAnswer() {
+        const input = document.getElementById("country-answer");
+        const answer = input.value.toLowerCase().trim();
 
-function goToEighthScreen() {
-   currentScreen = 8;
-   renderEighthScreen();
-}
+        if (answer === "малайзия") {
+          setTimeout(() => goToDevilsScreen(), 500);
+        } else {
+          input.value = "";
+          input.classList.add("shake");
+          input.focus();
+          setTimeout(() => {
+            input.classList.remove("shake");
+          }, 600);
+        }
+      }
 
-function renderEighthScreen() {
-   document.querySelector('.screen-content').innerHTML = `
+      function goToDevilsScreen() {
+        currentScreen = "devils";
+        renderDevilsScreen();
+      }
+
+      function renderDevilsScreen() {
+        document.querySelector(".screen-content").innerHTML = `
        <div class="question" style="text-align: center; line-height: 1.6;">
            <p style="margin-bottom: 20px; font-weight: bold; color: #ff6b6b;">В Малайзии водятся малайский тигр и малайский медведь, а вот дьяволы там не водятся. А где они водятся?</p>
        </div>
@@ -734,35 +814,31 @@ function renderEighthScreen() {
            Проверить ответ 🐰→
        </button>
    `;
-}
+      }
 
-function checkDevilsAnswer() {
-   const input = document.getElementById('devils-answer');
-   const answer = input.value.toLowerCase().trim();
-   
-   if (answer === 'тасмания') {
-       // Correct answer - proceed to next screen
-       setTimeout(() => goToNinthScreen(), 500);
-       // Here you can add code to go to the next screen
-   } else {
-       // Wrong answer - shake and reset
-       input.value = '';
-       input.classList.add('shake');
-       input.focus();
-       
-       setTimeout(() => {
-           input.classList.remove('shake');
-       }, 600);
-   }
-}
+      function checkDevilsAnswer() {
+        const input = document.getElementById("devils-answer");
+        const answer = input.value.toLowerCase().trim();
 
-function goToNinthScreen() {
-   currentScreen = 9;
-   renderNinthScreen();
-}
+        if (answer === "тасмания") {
+          setTimeout(() => goToAnagramScreen(), 500);
+        } else {
+          input.value = "";
+          input.classList.add("shake");
+          input.focus();
+          setTimeout(() => {
+            input.classList.remove("shake");
+          }, 600);
+        }
+      }
 
-function renderNinthScreen() {
-   document.querySelector('.screen-content').innerHTML = `
+      function goToAnagramScreen() {
+        currentScreen = "anagram";
+        renderAnagramScreen();
+      }
+
+      function renderAnagramScreen() {
+        document.querySelector(".screen-content").innerHTML = `
        <div style="text-align: center; margin-bottom: 30px; position: relative;">
            <div id="tasmania-word" style="font-size: 3rem; font-weight: bold; color: #ff6b6b; letter-spacing: 8px; position: relative; margin: 40px 0;">
                ТАСМАНИЯ
@@ -773,27 +849,27 @@ function renderNinthScreen() {
            <p style="font-weight: bold; color: #4ecdc4;">Составь 6 слов из букв выше</p>
        </div>
        
-       <button class="submit-btn" onclick="goToTenthScreen()">
+       <button class="submit-btn" onclick="goToCongratsScreen()">
            Готово! 🐰→
        </button>
    `;
-   
-   // Start rabbit animation
-   startRabbitAnimation();
-}
 
-function startRabbitAnimation() {
-   const word = document.getElementById('tasmania-word');
-   if (!word) return;
-   
-   const rabbits = ['🐰', '🐇', '🐰', '🐇'];
-   let rabbitIndex = 0;
-   
-   setInterval(() => {
-       // Create rabbit emoji
-       const rabbit = document.createElement('span');
-       rabbit.textContent = rabbits[rabbitIndex % rabbits.length];
-       rabbit.style.cssText = `
+        // Start rabbit animation
+        startRabbitAnimation();
+      }
+
+      function startRabbitAnimation() {
+        const word = document.getElementById("tasmania-word");
+        if (!word) return;
+
+        const rabbits = ["🐰", "🐇", "🐰", "🐇"];
+        let rabbitIndex = 0;
+
+        setInterval(() => {
+          // Create rabbit emoji
+          const rabbit = document.createElement("span");
+          rabbit.textContent = rabbits[rabbitIndex % rabbits.length];
+          rabbit.style.cssText = `
            position: absolute;
            font-size: 1.5rem;
            top: -30px;
@@ -802,27 +878,26 @@ function startRabbitAnimation() {
            pointer-events: none;
            z-index: 10;
        `;
-       
-       word.appendChild(rabbit);
-       rabbitIndex++;
-       
-       // Remove rabbit after animation
-       setTimeout(() => {
-           if (rabbit.parentNode) {
-               rabbit.parentNode.removeChild(rabbit);
-           }
-       }, 2000);
-       
-   }, 800);
-}
 
-function goToTenthScreen() {
-   currentScreen = 10;
-   renderTenthScreen();
-}
+          word.appendChild(rabbit);
+          rabbitIndex++;
 
-function renderTenthScreen() {
-   document.querySelector('.screen-content').innerHTML = `
+          // Remove rabbit after animation
+          setTimeout(() => {
+            if (rabbit.parentNode) {
+              rabbit.parentNode.removeChild(rabbit);
+            }
+          }, 2000);
+        }, 800);
+      }
+
+      function goToCongratsScreen() {
+        currentScreen = "congrats";
+        renderCongratsScreen();
+      }
+
+      function renderCongratsScreen() {
+        document.querySelector(".screen-content").innerHTML = `
        <div style="text-align: center; position: relative; overflow: hidden;">
            <div id="congratulations" style="font-size: 4rem; font-weight: bold; color: #4ecdc4; margin: 40px 0; animation: zoomIn 1s ease-out;">
                ПОЗДРАВЛЯЕМ!
@@ -835,96 +910,104 @@ function renderTenthScreen() {
            <div id="confetti-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5;"></div>
        </div>
    `;
-   
-   // Start confetti animation
-   startConfettiAnimation();
-}
 
-function startConfettiAnimation() {
-   const container = document.getElementById('confetti-container');
-   if (!container) return;
-   
-   const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57'];
-   
-   // Create confetti pieces
-   for (let i = 0; i < 50; i++) {
-       setTimeout(() => {
-           const confetti = document.createElement('div');
-           confetti.style.cssText = `
+        // Start confetti animation
+        startConfettiAnimation();
+      }
+
+      function startConfettiAnimation() {
+        const container = document.getElementById("confetti-container");
+        if (!container) return;
+
+        const colors = ["#ff6b6b", "#4ecdc4", "#45b7d1", "#96ceb4", "#feca57"];
+
+        // Create confetti pieces
+        for (let i = 0; i < 50; i++) {
+          setTimeout(() => {
+            const confetti = document.createElement("div");
+            confetti.style.cssText = `
                position: absolute;
                width: 8px;
                height: 8px;
                background: ${colors[Math.floor(Math.random() * colors.length)]};
                left: ${Math.random() * 100}%;
                top: -10px;
-               animation: confettiFall ${2 + Math.random() * 3}s linear forwards;
+               animation: confettiFall ${
+                 2 + Math.random() * 3
+               }s linear forwards;
                transform: rotate(${Math.random() * 360}deg);
            `;
-           
-           container.appendChild(confetti);
-           
-           // Remove confetti after animation
-           setTimeout(() => {
-               if (confetti.parentNode) {
-                   confetti.parentNode.removeChild(confetti);
-               }
-           }, 5000);
-       }, i * 100);
-   }
-}
 
+            container.appendChild(confetti);
 
-
-        function updateProgressBar(percentage) {
-            document.querySelector('.progress-fill').style.width = percentage + '%';
+            // Remove confetti after animation
+            setTimeout(() => {
+              if (confetti.parentNode) {
+                confetti.parentNode.removeChild(confetti);
+              }
+            }, 5000);
+          }, i * 100);
         }
+      }
 
-        function showSurpriseImage() {
-            const imageContainer = document.getElementById('surprise-image');
-            if (imageContainer) {
-                imageContainer.style.display = 'block';
-                setTimeout(() => {
-                    imageContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 100);
-            }
+      function updateProgressBar(percentage) {
+        document.querySelector(".progress-fill").style.width = percentage + "%";
+      }
+
+      function showSurpriseImage() {
+        const imageContainer = document.getElementById("surprise-image");
+        if (imageContainer) {
+          imageContainer.style.display = "block";
+          setTimeout(() => {
+            imageContainer.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
+          }, 100);
         }
+      }
 
-        function hideSurpriseImage() {
-            const imageContainer = document.getElementById('surprise-image');
-            if (imageContainer) {
-                imageContainer.style.display = 'none';
-            }
+      function hideSurpriseImage() {
+        const imageContainer = document.getElementById("surprise-image");
+        if (imageContainer) {
+          imageContainer.style.display = "none";
         }
+      }
 
-        function showMaybeCaption() {
-            const captionContainer = document.getElementById('maybe-caption');
-            if (captionContainer) {
-                captionContainer.style.display = 'block';
-                setTimeout(() => {
-                    captionContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 100);
-            }
+      function showMaybeCaption() {
+        const captionContainer = document.getElementById("maybe-caption");
+        if (captionContainer) {
+          captionContainer.style.display = "block";
+          setTimeout(() => {
+            captionContainer.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
+          }, 100);
         }
+      }
 
-        function hideMaybeCaption() {
-            const captionContainer = document.getElementById('maybe-caption');
-            if (captionContainer) {
-                captionContainer.style.display = 'none';
-            }
+      function hideMaybeCaption() {
+        const captionContainer = document.getElementById("maybe-caption");
+        if (captionContainer) {
+          captionContainer.style.display = "none";
         }
+      }
 
-        function nextScreen() {
-            if (selectedAnswer) {
-                alert(`You selected: ${selectedAnswer}\n\nThis is where we'd move to the next screen!`);
-            } else {
-                alert('Please make a selection first! 🐰');
-            }
+      function nextScreen() {
+        if (selectedAnswer) {
+          alert(
+            `You selected: ${selectedAnswer}\n\nThis is where we'd move to the next screen!`
+          );
+        } else {
+          alert("Please make a selection first! 🐰");
         }
+      }
 
-        // Add some interactive particles effect
-        function createParticle() {
-            const particle = document.createElement('div');
-            particle.style.cssText = `
+      // Add some interactive particles effect
+      function createParticle() {
+        const particle = document.createElement("div");
+        particle.style.cssText = `
                 position: fixed;
                 width: 4px;
                 height: 4px;
@@ -936,17 +1019,17 @@ function startConfettiAnimation() {
                 top: ${window.innerHeight}px;
                 animation: float-up 3s linear forwards;
             `;
-            
-            document.body.appendChild(particle);
-            
-            setTimeout(() => {
-                particle.remove();
-            }, 3000);
-        }
 
-        // Add CSS for particle animation
-        const style = document.createElement('style');
-        style.textContent = `
+        document.body.appendChild(particle);
+
+        setTimeout(() => {
+          particle.remove();
+        }, 3000);
+      }
+
+      // Add CSS for particle animation
+      const style = document.createElement("style");
+      style.textContent = `
             @keyframes float-up {
                 to {
                     transform: translateY(-${window.innerHeight + 50}px);
@@ -964,10 +1047,10 @@ function startConfettiAnimation() {
                 }
             }
         `;
-        document.head.appendChild(style);
+      document.head.appendChild(style);
 
-        // Create particles occasionally
-        setInterval(createParticle, 2000);
+      // Create particles occasionally
+      setInterval(createParticle, 2000);
     </script>
-</body>
+  </body>
 </html>
